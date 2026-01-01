@@ -18,12 +18,9 @@ export function Layout({ children }) {
                 </div>
             </div>
 
-            {/* Layout Main Container
-                - Mobile (< lg): min-h-screen (crece con contenido), sin overflow-hidden (scrolleable)
-                - Desktop (>= lg): h-screen (fijo), overflow-hidden (sin scroll)
-             */}
-            <main className={`${isFullScreen ? 'h-[111.11vh] lg:overflow-hidden p-0' : 'pt-0 pb-20 px-0 min-h-[85vh]'} relative z-10`}>
-                <div className="w-full h-full">
+            {/* Layout Main Container */}
+            <main className={`${isFullScreen ? 'h-[111.11vh] lg:overflow-hidden p-0' : 'flex-1 pt-0 pb-20 px-0 min-h-[85vh] flex flex-col'} relative z-10`}>
+                <div className="w-full h-full flex-1">
                     {children || <Outlet />}
                 </div>
             </main>

@@ -2,11 +2,7 @@ import { motion } from 'framer-motion';
 
 export function About() {
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="h-full flex flex-col justify-center max-w-lg mx-auto text-center space-y-8"
-        >
+        <div className="h-full flex flex-col justify-center max-w-lg mx-auto text-center space-y-8">
             <h2 className="text-3xl font-bold font-heading">Sobre la página</h2>
             <div className="p-6 bg-zinc-900/50 rounded-2xl border border-white/5 space-y-4 text-zinc-300 leading-relaxed">
                 <p>
