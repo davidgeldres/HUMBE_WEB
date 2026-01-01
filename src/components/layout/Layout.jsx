@@ -20,7 +20,7 @@ export function Layout({ children }) {
 
             {/* Layout Main Container */}
             <main className={`${isFullScreen ? 'h-[111.11vh] lg:overflow-hidden p-0' : 'flex-1 pt-24 pb-20 px-0 min-h-[85vh] flex flex-col'} relative z-10`}>
-                <div className="w-full h-full flex-1">
+                <div className="w-full h-full flex-1 flex flex-col">
                     {children || <Outlet />}
                 </div>
             </main>

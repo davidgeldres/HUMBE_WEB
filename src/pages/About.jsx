@@ -1,6 +1,6 @@
 export function About() {
     return (
-        <div className="h-full flex flex-col justify-center max-w-lg mx-auto text-center space-y-8">
+        <div className="flex-1 w-full flex flex-col items-center justify-center max-w-lg mx-auto text-center space-y-8">
             <h2 className="text-3xl font-bold font-heading">Sobre la página</h2>
             <div className="p-6 bg-zinc-900/50 rounded-2xl border border-white/5 space-y-4 text-zinc-300 leading-relaxed">
                 <p>
