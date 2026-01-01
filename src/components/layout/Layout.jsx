@@ -7,6 +7,7 @@ export function Layout({ children }) {
     const isHome = location.pathname === '/';
     const isAlbums = location.pathname.startsWith('/albums');
     const isInfo = location.pathname === '/info';
+    const isFavorites = location.pathname === '/favoritas';
     const isFullScreen = isHome || isAlbums || isFavorites || isInfo;
 
     return (
