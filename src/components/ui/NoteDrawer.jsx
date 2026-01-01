@@ -63,7 +63,7 @@ export function NoteDrawer({ isOpen, onClose, initialNote = '', initialAttachmen
 
                         <div className="flex-1 overflow-y-auto min-h-0 flex flex-col">
                             <textarea
-                                className="w-full h-32 bg-zinc-800/50 border border-white/10 rounded-2xl p-4 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500 resize-none mb-4 shrink-0"
+                                className="w-full h-32 bg-zinc-800/50 border border-white/10 rounded-2xl p-4 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-zinc-500 resize-none mb-8 shrink-0"
                                 placeholder="Escribe algo especial sobre esta canción..."
                                 maxLength={150}
                                 value={note || ''}
@@ -72,7 +72,7 @@ export function NoteDrawer({ isOpen, onClose, initialNote = '', initialAttachmen
 
                             {/* Media List */}
                             {mediaList.length > 0 && (
-                                <div className="grid grid-cols-2 gap-2 mb-4">
+                                <div className="grid grid-cols-2 gap-4 mb-4">
                                     {mediaList.map((item, index) => (
                                         <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-zinc-800 border border-white/10 group">
                                             {item.type === 'image' ? (
