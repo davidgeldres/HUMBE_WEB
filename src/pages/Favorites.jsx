@@ -88,7 +88,7 @@ export function Favorites() {
                                         <Trash2 size={16} />
                                     </button>
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>
