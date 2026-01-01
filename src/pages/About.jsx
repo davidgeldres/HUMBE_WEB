@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion';
-
 export function About() {
     return (
         <div className="h-full flex flex-col justify-center max-w-lg mx-auto text-center space-y-8">
@@ -17,6 +15,6 @@ export function About() {
                 <p className="text-zinc-500 text-sm">Versión 1.0.0</p>
                 <p className="text-zinc-600 text-xs mt-1">Con mucho Dav ❤️ para k &lt;3.</p>
             </div>
-        </motion.div>
+        </div>
     );
 }
