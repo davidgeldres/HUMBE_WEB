@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Heart, FileText, Trash2 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -55,10 +54,7 @@ export function Favorites() {
 
                     <div className="divide-y divide-white/5">
                         {favSongs.map((song) => (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
+                            <div
                                 key={song.id}
                                 className="group grid grid-cols-[auto_1fr_auto] gap-4 p-3 items-center hover:bg-white/5 transition-colors"
                             >
