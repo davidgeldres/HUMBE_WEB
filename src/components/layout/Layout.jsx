@@ -8,7 +8,7 @@ export function Layout({ children }) {
     const isAlbums = location.pathname.startsWith('/albums');
     const isInfo = location.pathname === '/info';
     const isFavorites = location.pathname === '/favoritas';
-    const isFullScreen = isHome || isAlbums || isFavorites || isInfo;
+    const isFullScreen = isHome || isAlbums || isFavorites;
 
     return (
         <div className="min-h-[111.11vh] w-full bg-black text-white font-sans selection:bg-cyan-500/30 selection:text-white relative">
@@ -20,13 +20,13 @@ export function Layout({ children }) {
             </div>
 
             {/* Layout Main Container */}
-            <main className={`${isFullScreen ? (isInfo ? 'h-screen' : 'h-[111.11vh]') + ' lg:overflow-hidden p-0' : 'flex-1 pt-24 pb-20 px-0 min-h-[85vh] flex flex-col'} relative z-10`}>
+            <main className={`${isFullScreen ? 'h-[111.11vh] lg:overflow-hidden p-0' : 'flex-1 pt-24 pb-20 px-0 min-h-[85vh] flex flex-col'} relative z-10`}>
                 <div className="w-full h-full flex-1 flex flex-col">
                     {children || <Outlet />}
                 </div>
             </main>
 
-            {!isFullScreen && <Footer />}
+            {!isFullScreen && !isInfo && <Footer />}
         </div>
     );
 }
