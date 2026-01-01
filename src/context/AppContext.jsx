@@ -32,16 +32,15 @@ export function AppProvider({ children }) {
         return () => subscription.unsubscribe();
     }, []);
 
-    // Fetch Data when User is ready
+    // Fetch Data & Setup Realtime
     useEffect(() => {
         if (!user) return;
 
         const fetchData = async () => {
-            // Fetch Favorites (Personal - per device)
+            // Fetch Favorites (Public - Shared Wall)
             const { data: favs } = await supabase
                 .from('favorites')
-                .select('song_id')
-                .eq('user_id', user.id);
+                .select('song_id');
 
             if (favs) setFavorites(favs.map(f => f.song_id));
 
@@ -66,9 +65,10 @@ export function AppProvider({ children }) {
 
         fetchData();
 
-        // Realtime Subscription for Notes (Public)
+        // Realtime Subscription
         const channel = supabase
-            .channel('public:notes')
+            .channel('public:data')
+            // Listen for Notes
             .on('postgres_changes', { event: '*', schema: 'public', table: 'notes' }, (payload) => {
                 const newNote = payload.new;
                 if (newNote && newNote.song_id) {
@@ -79,6 +79,15 @@ export function AppProvider({ children }) {
                             attachments: newNote.attachments
                         }
                     }));
+                }
+            })
+            // Listen for Favorites
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'favorites' }, (payload) => {
+                const { eventType, new: newFav, old: oldFav } = payload;
+                if (eventType === 'INSERT') {
+                    setFavorites(prev => [...prev, newFav.song_id]);
+                } else if (eventType === 'DELETE') {
+                    setFavorites(prev => prev.filter(id => id !== oldFav.song_id));
                 }
             })
             .subscribe();
