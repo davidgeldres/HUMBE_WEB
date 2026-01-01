@@ -50,7 +50,7 @@ export function NoteDrawer({ isOpen, onClose, initialNote = '', initialAttachmen
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-                        className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-zinc-900 border-l border-white/10 px-6 pt-6 pb-10 z-[70] shadow-2xl outline-none flex flex-col"
+                        className="fixed top-0 right-0 h-full w-full md:w-[450px] bg-zinc-900 border-l border-white/10 px-10 pt-6 pb-10 z-[70] shadow-2xl outline-none flex flex-col"
                     >
                         <div className="flex justify-between items-center mb-6 pt-20">
                             <h3 className="text-xl font-bold text-white">
