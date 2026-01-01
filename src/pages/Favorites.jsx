@@ -103,7 +103,8 @@ export function Favorites() {
                 onClose={() => setActiveNoteSong(null)}
                 title={activeNoteSong?.title}
                 initialNote={activeNoteSong ? (typeof notes[activeNoteSong.id] === 'object' ? notes[activeNoteSong.id]?.text || '' : notes[activeNoteSong.id] || '') : ''}
-                onSave={(text) => activeNoteSong && saveNote(activeNoteSong.id, text)}
+                initialAttachments={activeNoteSong && notes[activeNoteSong.id]?.attachments ? notes[activeNoteSong.id].attachments : []}
+                onSave={(text, attachments) => activeNoteSong && saveNote(activeNoteSong.id, text, attachments)}
             />
         </div>
     );
