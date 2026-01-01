@@ -121,7 +121,7 @@ export function NoteDrawer({ isOpen, onClose, initialNote = '', initialAttachmen
 
                                 <Button
                                     variant="primary"
-                                    className="px-6 py-2 rounded-lg text-xs font-bold bg-[#1e293b]/50 text-cyan-400 hover:bg-[#1e293b] border border-cyan-500/20"
+                                    className="px-6 py-2 rounded-lg text-xs font-bold text-cyan-400 hover:text-cyan-300 hover:bg-white/5 transition-colors tracking-widest"
                                     onClick={() => {
                                         onSave(note, mediaList);
                                         onClose();
