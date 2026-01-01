@@ -120,8 +120,8 @@ export function NoteDrawer({ isOpen, onClose, initialNote = '', initialAttachmen
                                 </label>
 
                                 <Button
-                                    variant="primary"
-                                    className="px-6 py-2 rounded-lg text-xs font-bold text-cyan-400 hover:text-cyan-300 hover:bg-white/5 transition-colors tracking-widest"
+                                    variant="ghost"
+                                    className="px-6 py-2 rounded-lg text-xs font-bold text-cyan-400 hover:text-cyan-300 hover:bg-transparent transition-colors tracking-widest"
                                     onClick={() => {
                                         onSave(note, mediaList);
                                         onClose();
