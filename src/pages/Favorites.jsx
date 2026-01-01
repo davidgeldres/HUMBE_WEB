@@ -23,7 +23,7 @@ export function Favorites() {
     }, [favorites]);
 
     return (
-        <div className="pt-32 h-full bg-[#111] px-8 overflow-y-auto">
+        <div className="pt-32 h-full bg-black px-8 overflow-y-auto">
             <header className="border-b border-zinc-800 pb-6 mb-8 flex items-end justify-between">
                 <div>
                     <h2 className="text-3xl font-bold text-white mb-1">Mis Favoritas</h2>
