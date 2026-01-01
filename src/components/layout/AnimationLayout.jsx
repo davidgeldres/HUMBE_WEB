@@ -13,14 +13,14 @@ export function AnimationLayout() {
 
     return (
         <BaseLayout>
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
                 <motion.div
                     key={location.pathname}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="w-full h-full absolute top-0 left-0"
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full"
                 >
                     <Outlet />
                 </motion.div>
