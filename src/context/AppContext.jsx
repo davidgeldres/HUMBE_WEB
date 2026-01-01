@@ -37,7 +37,7 @@ export function AppProvider({ children }) {
         if (!user) return;
 
         const fetchData = async () => {
-            // Fetch Favorites
+            // Fetch Favorites (Personal - per device)
             const { data: favs } = await supabase
                 .from('favorites')
                 .select('song_id')
@@ -45,15 +45,16 @@ export function AppProvider({ children }) {
 
             if (favs) setFavorites(favs.map(f => f.song_id));
 
-            // Fetch Notes
-            const { data: userNotes } = await supabase
+            // Fetch Notes (Public - Shared Wall)
+            // Fetch ALL notes, ordered by time so latest updates overwrite in the map
+            const { data: allNotes } = await supabase
                 .from('notes')
                 .select('song_id, text, attachments')
-                .eq('user_id', user.id);
+                .order('updated_at', { ascending: true });
 
-            if (userNotes) {
+            if (allNotes) {
                 const notesMap = {};
-                userNotes.forEach(note => {
+                allNotes.forEach(note => {
                     notesMap[note.song_id] = {
                         text: note.text,
                         attachments: note.attachments
@@ -64,6 +65,27 @@ export function AppProvider({ children }) {
         };
 
         fetchData();
+
+        // Realtime Subscription for Notes (Public)
+        const channel = supabase
+            .channel('public:notes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'notes' }, (payload) => {
+                const newNote = payload.new;
+                if (newNote && newNote.song_id) {
+                    setNotes(prev => ({
+                        ...prev,
+                        [newNote.song_id]: {
+                            text: newNote.text,
+                            attachments: newNote.attachments
+                        }
+                    }));
+                }
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [user]);
 
     const toggleFavorite = async (songId) => {
