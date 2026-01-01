@@ -1,43 +1,136 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
-    const [favorites, setFavorites] = useState(() => {
-        const saved = localStorage.getItem('humbe_favorites');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [favorites, setFavorites] = useState([]);
+    const [notes, setNotes] = useState({});
+    const [user, setUser] = useState(null);
 
-    const [notes, setNotes] = useState(() => {
-        const saved = localStorage.getItem('humbe_notes');
-        return saved ? JSON.parse(saved) : {};
-    });
-
+    // Initialize Auth and Data Fetching
     useEffect(() => {
-        localStorage.setItem('humbe_favorites', JSON.stringify(favorites));
-    }, [favorites]);
+        // 1. Check for existing session or sign in anonymously
+        const initSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                setUser(session.user);
+            } else {
+                const { data: { user }, error } = await supabase.auth.signInAnonymously();
+                if (user) setUser(user);
+                if (error) console.error('Error signing in:', error);
+            }
+        };
 
+        initSession();
+
+        // 2. Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    // Fetch Data when User is ready
     useEffect(() => {
-        localStorage.setItem('humbe_notes', JSON.stringify(notes));
-    }, [notes]);
+        if (!user) return;
 
-    const toggleFavorite = (songId) => {
+        const fetchData = async () => {
+            // Fetch Favorites
+            const { data: favs } = await supabase
+                .from('favorites')
+                .select('song_id')
+                .eq('user_id', user.id);
+
+            if (favs) setFavorites(favs.map(f => f.song_id));
+
+            // Fetch Notes
+            const { data: userNotes } = await supabase
+                .from('notes')
+                .select('song_id, text, attachments')
+                .eq('user_id', user.id);
+
+            if (userNotes) {
+                const notesMap = {};
+                userNotes.forEach(note => {
+                    notesMap[note.song_id] = {
+                        text: note.text,
+                        attachments: note.attachments
+                    };
+                });
+                setNotes(notesMap);
+            }
+        };
+
+        fetchData();
+    }, [user]);
+
+    const toggleFavorite = async (songId) => {
+        if (!user) return;
+
+        const isFavorite = favorites.includes(songId);
+
+        // Optimistic Update
         setFavorites(prev =>
-            prev.includes(songId)
-                ? prev.filter(id => id !== songId)
-                : [...prev, songId]
+            isFavorite ? prev.filter(id => id !== songId) : [...prev, songId]
         );
+
+        if (isFavorite) {
+            await supabase.from('favorites').delete().match({ user_id: user.id, song_id: songId });
+        } else {
+            await supabase.from('favorites').insert({ user_id: user.id, song_id: songId });
+        }
     };
 
-    const saveNote = (songId, text, attachments = []) => {
+    const saveNote = async (songId, text, attachments = []) => {
+        if (!user) return;
+
+        // Optimistic Update
         setNotes(prev => ({
             ...prev,
-            [songId]: {
-                text: text,
-                attachments: attachments, // Array of { url, type }
-                timestamp: new Date().toISOString()
-            }
+            [songId]: { text, attachments }
         }));
+
+        // Handle File Uploads (if attachments have base64 data)
+        const processedAttachments = await Promise.all(attachments.map(async (att) => {
+            if (att.url.startsWith('data:')) {
+                // It's a base64 string, need to upload
+                const fileExt = att.type === 'video' ? 'mp4' : 'jpg';
+                const fileName = `${user.id}/${songId}/${Date.now()}.${fileExt}`;
+
+                // Convert base64 to blob
+                const res = await fetch(att.url);
+                const blob = await res.blob();
+
+                const { data, error } = await supabase.storage
+                    .from('humbe-media')
+                    .upload(fileName, blob);
+
+                if (error) {
+                    console.error('Upload error:', error);
+                    return att; // Fallback or handle error
+                }
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('humbe-media')
+                    .getPublicUrl(fileName);
+
+                return { ...att, url: publicUrl, storagePath: fileName };
+            }
+            return att; // Already a URL
+        }));
+
+        // Upsert Note
+        const { error } = await supabase.from('notes').upsert({
+            user_id: user.id,
+            song_id: songId,
+            text,
+            attachments: processedAttachments,
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id, song_id' });
+
+        if (error) console.error('Error saving note:', error);
     };
 
     return (

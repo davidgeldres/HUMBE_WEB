@@ -19,7 +19,7 @@ export function About() {
 
             <div className="pt-4 border-t border-white/5">
                 <p className="text-zinc-500 text-sm">Versión 1.0.0</p>
-                <p className="text-zinc-600 text-xs mt-1">Con mucho ❤️ para k &lt;3 de Dav.</p>
+                <p className="text-zinc-600 text-xs mt-1">Con mucho Dav ❤️ para k &lt;3.</p>
             </div>
         </motion.div>
     );
